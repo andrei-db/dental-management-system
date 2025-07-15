@@ -11,3 +11,6 @@ export const addPatient = (patient: {
 }) => API.post("/patients", patient);
 
 export const getAllPatients = () => API.get("/patients");
+
+export const deletePatient = (id: string) => API.delete(`/patients/${id}`);
+

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getAllPatients, addPatient } from "../api/patients";
+import { getAllPatients, addPatient, deletePatient } from "../api/patients";
 import Sidebar from "../components/Sidebar";
 interface Patient {
   _id: string;
@@ -14,6 +14,18 @@ export default function Patients() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
+
+  const handleDelete = async (id: string) => {
+  if (!confirm("Are you sure you want to delete this patient?")) return;
+
+  try {
+    await deletePatient(id);
+    setPatients(patients.filter((p) => p._id !== id));
+  } catch (err) {
+    alert("Failed to delete patient.");
+    console.error(err);
+  }
+};
 
   useEffect(() => {
     const fetchPatients = async () => {
@@ -97,6 +109,12 @@ export default function Patients() {
                 <td>{p.name}</td>
                 <td>{p.email}</td>
                 <td>{p.phone}</td>
+                <td><button
+                  onClick={() => handleDelete(p._id)}
+                  className="text-red-600 hover:underline text-sm"
+                >
+                  Delete
+                </button></td>
               </tr>
             ))}
           </table>

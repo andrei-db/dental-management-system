@@ -27,4 +27,16 @@ router.get("/", async (req, res) => {
   }
 });
 
+router.delete("/:id", async (req, res) => {
+  try {
+    const deleted = await Patient.findByIdAndDelete(req.params.id);
+    if (!deleted) return res.status(404).json({ msg: "Patient not found." });
+
+    res.json({ msg: "Patient deleted." });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ msg: "Server error." });
+  }
+});
+
 module.exports = router;
