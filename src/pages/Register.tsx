@@ -1,21 +1,21 @@
-// src/pages/Register.tsx
 import { useState } from "react";
 import { register } from "../api/auth";
+import { useNavigate } from "react-router-dom";
+
 
 export default function Register() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
+  const navigate = useNavigate();
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
       const res = await register(name, email, password);
       localStorage.setItem("token", res.data.token);
-      alert("Cont creat cu succes!");
-      // Redirect to dashboard or login
+      navigate("/dashboard");
     } catch (err) {
-      alert("Eroare la înregistrare.");
+      alert("Registration error.");
       console.error(err);
     }
   };
@@ -26,10 +26,10 @@ export default function Register() {
         onSubmit={handleRegister}
         className="p-6 rounded shadow-md w-full max-w-sm"
       >
-        <h2 className="text-xl font-bold mb-4 text-center">Înregistrare</h2>
+        <h2 className="text-xl font-bold mb-4 text-center">Register</h2>
         <input
           type="text"
-          placeholder="Nume"
+          placeholder="Name"
           className="w-full p-2 mb-3 border rounded"
           value={name}
           onChange={(e) => setName(e.target.value)}
@@ -45,7 +45,7 @@ export default function Register() {
         />
         <input
           type="password"
-          placeholder="Parolă"
+          placeholder="Password"
           className="w-full p-2 mb-4 border rounded"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
@@ -55,7 +55,7 @@ export default function Register() {
           type="submit"
           className="bg-green-600 text-white w-full py-2 rounded hover:bg-green-700"
         >
-          Creează cont
+          Create Account
         </button>
       </form>
     </div>

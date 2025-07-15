@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { login } from "../api/auth";
+import { useNavigate } from "react-router-dom";
 
 export default function Login() {
     const [email, setEmail] = useState("");
@@ -9,11 +10,11 @@ export default function Login() {
         e.preventDefault();
         try {
             const res = await login(email, password);
+            const navigate = useNavigate();
             localStorage.setItem("token", res.data.token);
-            alert("Autentificare reușită!");
-            // TODO: Redirect to dashboard
+            navigate("/dashboard");
         } catch (err) {
-            alert("Autentificare eșuată.");
+            alert("Authentication failed");
         }
     };
 
