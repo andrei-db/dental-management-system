@@ -20,6 +20,15 @@ export default function Patients() {
   const [editEmail, setEditEmail] = useState("");
   const [editPhone, setEditPhone] = useState("");
 
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const filteredPatients = patients.filter((p) =>
+  [p.name, p.email, p.phone]
+    .join(" ")
+    .toLowerCase()
+    .includes(searchTerm.toLowerCase())
+);
+
   const startEdit = (patient: Patient) => {
     setEditingId(patient._id);
     setEditName(patient.name);
@@ -120,9 +129,20 @@ export default function Patients() {
         </button>
       </div>
       <div className=" p-4 rounded shadow">
-        {
-          
-            patients.map((p) => (
+        <div className="mb-4">
+          <input
+            type="text"
+            placeholder="Search patients..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="border px-3 py-2 rounded w-full sm:w-1/2"
+          />
+        </div>
+
+        <table className="w-full">
+          {
+
+            filteredPatients.map((p) => (
               <tr key={p._id}>
                 {editingId === p._id ? (
                   <>
@@ -186,6 +206,7 @@ export default function Patients() {
               </tr>
             ))
           }
+        </table>
       </div>
     </Sidebar>
   );
