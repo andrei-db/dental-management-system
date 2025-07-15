@@ -5,7 +5,7 @@ interface Props {
   children: ReactNode;
 }
 
-export default function SidebarLayout({ children }: Props) {
+export default function Sidebar({ children }: Props) {
   const navigate = useNavigate();
 
   const handleLogout = () => {
