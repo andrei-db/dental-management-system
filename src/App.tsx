@@ -5,7 +5,7 @@ import PrivateRoute from "./components/PrivateRoute";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
-
+import Patients from "./pages/Patients";
 function App() {
   return (
     <Routes>
@@ -33,6 +33,17 @@ function App() {
           </PrivateRoute>
         }
       />
+      
+
+      <Route
+        path="/patients"
+        element={
+          <PrivateRoute>
+            <Patients />
+          </PrivateRoute>
+        }
+      />
+
       <Route
         path="*"
         element={

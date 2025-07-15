@@ -12,6 +12,8 @@ app.use(express.json());
 
 app.use("/api/auth", require("./routes/auth"));
 
+app.use("/api/patients", require("./routes/patients"));
+
 app.get("/", (req, res) => res.send("DentoCare API running"));
 
 const PORT = process.env.PORT || 5000;
