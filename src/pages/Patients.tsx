@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getAllPatients, addPatient, deletePatient } from "../api/patients";
+import { getAllPatients, addPatient, deletePatient, updatePatient } from "../api/patients";
 import Sidebar from "../components/Sidebar";
 interface Patient {
   _id: string;
@@ -15,17 +15,44 @@ export default function Patients() {
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
 
-  const handleDelete = async (id: string) => {
-  if (!confirm("Are you sure you want to delete this patient?")) return;
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editName, setEditName] = useState("");
+  const [editEmail, setEditEmail] = useState("");
+  const [editPhone, setEditPhone] = useState("");
 
-  try {
-    await deletePatient(id);
-    setPatients(patients.filter((p) => p._id !== id));
-  } catch (err) {
-    alert("Failed to delete patient.");
-    console.error(err);
-  }
-};
+  const startEdit = (patient: Patient) => {
+    setEditingId(patient._id);
+    setEditName(patient.name);
+    setEditEmail(patient.email);
+    setEditPhone(patient.phone);
+  };
+  const handleUpdate = async (id: string) => {
+    try {
+      const res = await updatePatient(id, {
+        name: editName,
+        email: editEmail,
+        phone: editPhone,
+      });
+
+      setPatients(patients.map(p => p._id === id ? res.data : p));
+      setEditingId(null);
+    } catch (err) {
+      alert("Failed to update patient.");
+      console.error(err);
+    }
+  };
+
+  const handleDelete = async (id: string) => {
+    if (!confirm("Are you sure you want to delete this patient?")) return;
+
+    try {
+      await deletePatient(id);
+      setPatients(patients.filter((p) => p._id !== id));
+    } catch (err) {
+      alert("Failed to delete patient.");
+      console.error(err);
+    }
+  };
 
   useEffect(() => {
     const fetchPatients = async () => {
@@ -93,32 +120,72 @@ export default function Patients() {
         </button>
       </div>
       <div className=" p-4 rounded shadow">
-        {patients.length === 0 ? (
-          <p className="">No patients found.</p>
-        ) : (
-          <table className="w-full space-y-2">
-            <thead>
-              <tr>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Phone</th>
-              </tr>
-            </thead>
-            {patients.map((p) => (
+        {
+          
+            patients.map((p) => (
               <tr key={p._id}>
-                <td>{p.name}</td>
-                <td>{p.email}</td>
-                <td>{p.phone}</td>
-                <td><button
-                  onClick={() => handleDelete(p._id)}
-                  className="text-red-600 hover:underline text-sm"
-                >
-                  Delete
-                </button></td>
+                {editingId === p._id ? (
+                  <>
+                    <td>
+                      <input
+                        value={editName}
+                        onChange={(e) => setEditName(e.target.value)}
+                        className="border px-2 py-1 rounded"
+                      />
+                    </td>
+                    <td>
+                      <input
+                        value={editEmail}
+                        onChange={(e) => setEditEmail(e.target.value)}
+                        className="border px-2 py-1 rounded"
+                      />
+                    </td>
+                    <td>
+                      <input
+                        value={editPhone}
+                        onChange={(e) => setEditPhone(e.target.value)}
+                        className="border px-2 py-1 rounded"
+                      />
+                    </td>
+                    <td className="space-x-2">
+                      <button
+                        onClick={() => handleUpdate(p._id)}
+                        className="bg-blue-600 text-white px-2 py-1 rounded hover:bg-blue-700 text-sm"
+                      >
+                        Save
+                      </button>
+                      <button
+                        onClick={() => setEditingId(null)}
+                        className="text-gray-600 hover:underline text-sm"
+                      >
+                        Cancel
+                      </button>
+                    </td>
+                  </>
+                ) : (
+                  <>
+                    <td>{p.name}</td>
+                    <td>{p.email}</td>
+                    <td>{p.phone}</td>
+                    <td className="space-x-2">
+                      <button
+                        onClick={() => startEdit(p)}
+                        className="text-blue-600 hover:underline text-sm"
+                      >
+                        Edit
+                      </button>
+                      <button
+                        onClick={() => handleDelete(p._id)}
+                        className="text-red-600 hover:underline text-sm"
+                      >
+                        Delete
+                      </button>
+                    </td>
+                  </>
+                )}
               </tr>
-            ))}
-          </table>
-        )}
+            ))
+          }
       </div>
     </Sidebar>
   );

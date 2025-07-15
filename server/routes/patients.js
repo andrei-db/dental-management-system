@@ -39,4 +39,23 @@ router.delete("/:id", async (req, res) => {
   }
 });
 
+router.put("/:id", async (req, res) => {
+  const { name, email, phone } = req.body;
+
+  try {
+    const updated = await Patient.findByIdAndUpdate(
+      req.params.id,
+      { name, email, phone },
+      { new: true }
+    );
+
+    if (!updated) return res.status(404).json({ msg: "Patient not found." });
+
+    res.json(updated);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ msg: "Server error." });
+  }
+});
+
 module.exports = router;
