@@ -10,7 +10,7 @@ export default function DashboardLayout({ children }) {
           <a href="/dashboard/patients" className="block p-2 rounded hover:bg-gray-200">
             🧑‍⚕️ Patients
           </a>
-          <a href="/doctors" className="block p-2 rounded hover:bg-gray-200">
+          <a href="/dashboard/doctors" className="block p-2 rounded hover:bg-gray-200">
             💉 Doctors
           </a>
           <a href="/appointments" className="block p-2 rounded hover:bg-gray-200">
