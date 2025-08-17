@@ -13,19 +13,10 @@ export default function DashboardLayout({ children }) {
           <a href="/dashboard/doctors" className="block p-2 rounded hover:bg-gray-200">
             💉 Doctors
           </a>
-          <a href="/appointments" className="block p-2 rounded hover:bg-gray-200">
+          <a href="/dashboard/appointments" className="block p-2 rounded hover:bg-gray-200">
             📅 Appointments
           </a>
-          <a href="/messages" className="block p-2 rounded hover:bg-gray-200">
-            🧑‍⚕️ Messages
-          </a>
-          <a href="/payments" className="block p-2 rounded hover:bg-gray-200">
-            💳 Payments
-          </a>
-          <a href="/analytics" className="block p-2 rounded hover:bg-gray-200">
-            🧑‍⚕️ Analytics
-          </a>
-          <a href="/settings" className="block p-2 rounded hover:bg-gray-200">
+          <a href="/dashboard/settings" className="block p-2 rounded hover:bg-gray-200">
             ⚙️ Settings
           </a>
         </nav>
