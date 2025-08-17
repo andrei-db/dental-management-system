@@ -1,10 +1,11 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 export default function AddAppointmentModal({ onAdd, patients = [], doctors = [] }) {
   const [form, setForm] = useState({ patient: "", doctor: "", date: "", time: "", notes: "" });
+  const [availableHours, setAvailableHours] = useState([]);
+
 
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
@@ -14,12 +15,24 @@ export default function AddAppointmentModal({ onAdd, patients = [], doctors = []
     setForm({ patient: "", doctor: "", date: "", time: "", notes: "" });
   };
 
-  const timeSlots = ["09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "12:00", "14:00", "14:30", "15:00", "15:30", "16:00", "16:30"];
+    useEffect(() => {
+    if (form.doctor && form.date && form.patient) {
+      fetch(`/api/appointments/available?doctorId=${form.doctor}&patientId=${form.patient}&date=${form.date}`)
+        .then((res) => {
+          if (!res.ok) {
+            return { available: [] };
+          }
+          return res.json();
+        })
+        .then((data) => setAvailableHours(data.available || []))
+        .catch(() => setAvailableHours([]));
+    }
+  }, [form.doctor, form.date, form.patient]);
 
   return (
     <Dialog>
       <DialogTrigger className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">
-        ➕ Add Appointment
+        Add Appointment
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
@@ -45,7 +58,6 @@ export default function AddAppointmentModal({ onAdd, patients = [], doctors = []
           </select>
 
 
-          {/* Doctor */}
           <select name="doctor" value={form.doctor} onChange={handleChange} className="w-full border rounded px-3 py-2">
             <option value="" disabled hidden>Select Doctor</option>
             {doctors.map((d) => (
@@ -53,10 +65,8 @@ export default function AddAppointmentModal({ onAdd, patients = [], doctors = []
             ))}
           </select>
 
-          {/* Date */}
           <input type="date" name="date" value={form.date} onChange={handleChange} className="w-full border rounded px-3 py-2" required />
 
-          {/* Time */}
           <select
             name="time"
             value={form.time}
@@ -64,28 +74,12 @@ export default function AddAppointmentModal({ onAdd, patients = [], doctors = []
             className="w-full border rounded px-3 py-2"
             required
           >
-            <option value="" disabled hidden>
-              Select Time
-            </option>
-            {[
-              "09:00",
-              "10:00",
-              "11:00",
-              "12:00",
-              "13:00",
-              "14:00",
-              "15:00",
-              "16:00",
-              "17:00",
-            ].map((hour) => (
-              <option key={hour} value={hour}>
-                {hour}
-              </option>
+            <option value="" disabled hidden>Select Time</option>
+            {availableHours.map((hour) => (
+              <option key={hour} value={hour}>{hour}</option>
             ))}
           </select>
 
-
-          {/* Notes */}
           <textarea name="notes" value={form.notes} onChange={handleChange} placeholder="Notes" className="w-full border rounded px-3 py-2"></textarea>
 
           <button type="submit" className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600">
